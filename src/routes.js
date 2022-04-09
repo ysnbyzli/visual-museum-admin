@@ -5,8 +5,11 @@ import {
   AppstoreOutlined,
   SettingOutlined,
   LinkOutlined,
+  TeamOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
-import Categories from "./pages/Categories";
+import Person from "./pages/person";
+import AddNewPerson from "./pages/person/AddNewPerson";
 import Home from "./pages/Home";
 
 export const ROUTES = [
@@ -20,11 +23,19 @@ export const ROUTES = [
   },
   {
     id: "2",
-    title: "Kategoriler",
-    key: "CATEGORIES",
-    path: "/categories",
-    icon: <AppstoreOutlined />,
-    element: <Categories />,
+    title: "Kişiler",
+    key: "PERSONS",
+    path: "/persons",
+    icon: <TeamOutlined />,
+    element: <Person />,
+  },
+  {
+    id: "3",
+    title: "Kişi Ekle",
+    key: "ADD-PERSON",
+    path: "/persons/add",
+    icon: <UserAddOutlined />,
+    element: <AddNewPerson />,
   },
 ];
 

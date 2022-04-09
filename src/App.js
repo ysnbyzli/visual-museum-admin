@@ -5,7 +5,7 @@ import Sidebar from "./components/navigation/Sidebar";
 
 function App() {
   return (
-    <div className="App">
+    <div className="flex h-full">
       <BrowserRouter>
         <Sidebar />
         <Container />
