@@ -6,6 +6,9 @@ import {
   AppstoreOutlined,
   SettingOutlined,
   LinkOutlined,
+  TeamOutlined,
+  UserAddOutlined,
+  TableOutlined,
 } from "@ant-design/icons";
 import { ROUTES } from "../../routes";
 import { Link } from "react-router-dom";
@@ -21,18 +24,16 @@ const Sidebar = () => {
       mode="inline"
       theme="light"
     >
-      {ROUTES.map(({ id, title, icon, path }) => (
-        <Menu.Item key={id} icon={icon}>
-          <Link to={path}>{title}</Link>
+      <Menu.Item key={"1"} icon={<HomeOutlined />}>
+        <Link to={"/"}>Anasayfa</Link>
+      </Menu.Item>
+      <SubMenu key="sub1" icon={<TeamOutlined />} title="Kişiler">
+        <Menu.Item key="2" icon={<TableOutlined />}>
+          <Link to={"/persons"}>Listele</Link>
         </Menu.Item>
-      ))}
-      <SubMenu key="sub1" icon={<AppstoreOutlined />} title="Navigation Two">
-        <Menu.Item key="3">Option 3</Menu.Item>
-        <Menu.Item key="4">Option 4</Menu.Item>
-        <SubMenu key="sub1-2" title="Submenu">
-          <Menu.Item key="5">Option 5</Menu.Item>
-          <Menu.Item key="6">Option 6</Menu.Item>
-        </SubMenu>
+        <Menu.Item key="3" icon={<UserAddOutlined />}>
+          <Link to="/persons/add">Ekle</Link>
+        </Menu.Item>
       </SubMenu>
       <SubMenu key="sub2" icon={<SettingOutlined />} title="Navigation Three">
         <Menu.Item key="7">Option 7</Menu.Item>
