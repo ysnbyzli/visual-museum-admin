@@ -27,3 +27,5 @@ export const getEventsByPersonId = (id) =>
   MuseumAPI.get(`/events/persons/${id}`);
 
 export const addEvent = (data) => MuseumAPI.post("/events", data);
+
+export const deleteEvent = (id) => MuseumAPI.delete(`/events/${id}`);

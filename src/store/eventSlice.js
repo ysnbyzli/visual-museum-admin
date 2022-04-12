@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addEvent, getEventsByPersonId } from "../api/request";
+import { addEvent, getEventsByPersonId, deleteEvent } from "../api/request";
 import { log } from "../utils/log";
 
 export const getAllEvents = createAsyncThunk(
@@ -25,6 +25,17 @@ export const addNewEvent = createAsyncThunk("events/add", async (values) => {
     log.error("ADD_NEW_EVENT", error.response);
   }
 });
+
+export const deleteOneEvent = createAsyncThunk("events/delete", async (id) => {
+  try {
+    const { data } = await deleteEvent(id);
+    log.success("DELETE_EVENT", data);
+    return data;
+  } catch (e) {
+    log.error("DELETE_EVENT", e.response);
+  }
+});
+
 export const eventSlice = createSlice({
   name: "persons",
   initialState: {
@@ -55,6 +66,20 @@ export const eventSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(addNewEvent.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(deleteOneEvent.pending, (state) => {
+      state.error = null;
+      state.pending = true;
+    });
+    builder.addCase(deleteOneEvent.fulfilled, (state, action) => {
+      state.data = state.data.filter(
+        (event) => event._id !== action.payload._id
+      );
+      state.loading = false;
+    });
+    builder.addCase(deleteOneEvent.rejected, (state, action) => {
       state.error = action.payload;
       state.loading = false;
     });

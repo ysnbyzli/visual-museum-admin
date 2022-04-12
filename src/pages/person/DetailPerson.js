@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Avatar, Image, Timeline, List } from "antd";
+import { Avatar, Image, Timeline, Modal } from "antd";
 import { findById } from "../../api/request";
 import { log } from "../../utils/log";
 import { encodeDate } from "../../utils/date";
 import AddEvent from "../../components/person/AddEvent";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllEvents } from "../../store/eventSlice";
-import { ClockCircleOutlined } from "@ant-design/icons";
+import { deleteOneEvent, getAllEvents } from "../../store/eventSlice";
+import {
+  ExclamationCircleOutlined,
+  DeleteOutlined,
+  EditOutlined,
+} from "@ant-design/icons";
+
+const { confirm } = Modal;
 
 const DetailPerson = () => {
   const { id } = useParams();
@@ -28,6 +34,20 @@ const DetailPerson = () => {
     dispatch(getAllEvents(id));
   }, [id]);
 
+  const showDeleteConfirm = (_id) => {
+    confirm({
+      title: "Olayı silmek istediğinize emin misiniz?",
+      icon: <ExclamationCircleOutlined />,
+      content: "Bu işlem geri alınamaz!",
+      okText: "Evet",
+      okType: "danger",
+      cancelText: "Hayır",
+      onOk() {
+        dispatch(deleteOneEvent(_id));
+      },
+    });
+  };
+
   return (
     <div className="pt-10">
       <div className="flex justify-between">
@@ -36,27 +56,44 @@ const DetailPerson = () => {
       </div>
       <div className="flex justify-center items-center">
         <Timeline mode="alternate">
-          {data.map(({ title, description, startDate, endDate, photos }) => (
-            <Timeline.Item
-              label={
-                endDate
-                  ? `${encodeDate(startDate)} - ${encodeDate(endDate)}`
-                  : `${encodeDate(startDate)}`
-              }
-            >
-              <div className="flex flex-col">
-                <h3 className="text-xl">{title}</h3>
-                <p>{description}</p>
-                <div className="flex gap-2">
-                  <Image.PreviewGroup>
-                    {photos.map((photo) => (
-                      <Image width={200} src={photo} />
-                    ))}
-                  </Image.PreviewGroup>
+          {data.map(
+            ({ _id, title, description, startDate, endDate, photos }) => (
+              <Timeline.Item
+                key={_id}
+                label={
+                  endDate
+                    ? `${encodeDate(startDate)} - ${encodeDate(endDate)}`
+                    : `${encodeDate(startDate)}`
+                }
+              >
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center">
+                    <h3 className="text-xl">{title}</h3>
+                    <div className="mr-3 flex gap-4">
+                      <EditOutlined
+                        style={{ color: "#e74c3c" }}
+                        className="cursor-pointer"
+                      />
+                      <DeleteOutlined
+                        style={{ color: "#e74c3c" }}
+                        className="cursor-pointer"
+                        onClick={() => showDeleteConfirm(_id)}
+                      />
+                    </div>
+                  </div>
+
+                  <p>{description}</p>
+                  <div className="flex gap-2">
+                    <Image.PreviewGroup>
+                      {photos.map((photo) => (
+                        <Image width={200} src={photo} />
+                      ))}
+                    </Image.PreviewGroup>
+                  </div>
                 </div>
-              </div>
-            </Timeline.Item>
-          ))}
+              </Timeline.Item>
+            )
+          )}
         </Timeline>
       </div>
     </div>
