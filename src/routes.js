@@ -11,6 +11,7 @@ import {
 import Person from "./pages/person";
 import AddNewPerson from "./pages/person/AddNewPerson";
 import Home from "./pages/Home";
+import DetailPerson from "./pages/person/DetailPerson";
 
 export const ROUTES = [
   {
@@ -26,15 +27,21 @@ export const ROUTES = [
     title: "Kişiler",
     key: "PERSONS",
     path: "/persons",
-    icon: <TeamOutlined />,
+    exact: true,
     element: <Person />,
   },
   {
     id: "3",
+    title: "Kişi Detay",
+    key: "DETAIL-PERSON",
+    path: "/persons/:id",
+    element: <DetailPerson />,
+  },
+  {
+    id: "4",
     title: "Kişi Ekle",
     key: "ADD-PERSON",
     path: "/persons/add",
-    icon: <UserAddOutlined />,
     element: <AddNewPerson />,
   },
 ];
@@ -42,8 +49,8 @@ export const ROUTES = [
 export const Switcher = () => {
   return (
     <Routes>
-      {ROUTES.map(({ path, element }) => (
-        <Route path={path} element={element} />
+      {ROUTES.map(({ path, element, exact }) => (
+        <Route path={path} element={element} exact={exact} />
       ))}
     </Routes>
   );

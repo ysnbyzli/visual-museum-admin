@@ -35,17 +35,6 @@ const Sidebar = () => {
           <Link to="/persons/add">Ekle</Link>
         </Menu.Item>
       </SubMenu>
-      <SubMenu key="sub2" icon={<SettingOutlined />} title="Navigation Three">
-        <Menu.Item key="7">Option 7</Menu.Item>
-        <Menu.Item key="8">Option 8</Menu.Item>
-        <Menu.Item key="9">Option 9</Menu.Item>
-        <Menu.Item key="10">Option 10</Menu.Item>
-      </SubMenu>
-      <Menu.Item key="link" icon={<LinkOutlined />}>
-        <a href="https://ant.design" target="_blank" rel="noopener noreferrer">
-          Ant Design
-        </a>
-      </Menu.Item>
     </Menu>
   );
 };
