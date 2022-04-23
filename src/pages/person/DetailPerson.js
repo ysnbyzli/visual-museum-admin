@@ -12,12 +12,15 @@ import {
   DeleteOutlined,
   EditOutlined,
 } from "@ant-design/icons";
+import UpdateEventModal from "../../components/modal/event/UpdateEventModal";
 
 const { confirm } = Modal;
 
 const DetailPerson = () => {
   const { id } = useParams();
   const [person, setPerson] = useState(null);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [selectedUpdatedEvent, setSelectedUpdatedEvent] = useState(null);
   const { data } = useSelector((state) => state.events);
   const dispatch = useDispatch();
 
@@ -71,8 +74,12 @@ const DetailPerson = () => {
                     <h3 className="text-xl">{title}</h3>
                     <div className="mr-3 flex gap-4">
                       <EditOutlined
-                        style={{ color: "#e74c3c" }}
+                        style={{ color: "#3498db" }}
                         className="cursor-pointer"
+                        onClick={() => {
+                          setSelectedUpdatedEvent(_id);
+                          setIsUpdateModalVisible(true);
+                        }}
                       />
                       <DeleteOutlined
                         style={{ color: "#e74c3c" }}
@@ -96,6 +103,14 @@ const DetailPerson = () => {
           )}
         </Timeline>
       </div>
+      {selectedUpdatedEvent && (
+        <UpdateEventModal
+          setSelectedUpdatedEvent={setSelectedUpdatedEvent}
+          isModalVisible={isUpdateModalVisible}
+          setIsModalVisible={setIsUpdateModalVisible}
+          _id={selectedUpdatedEvent}
+        />
+      )}
     </div>
   );
 };

@@ -1,5 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { addEvent, getEventsByPersonId, deleteEvent } from "../api/request";
+import { message } from "antd";
+import {
+  addEvent,
+  getEventsByPersonId,
+  deleteEvent,
+  updateEvent,
+} from "../api/request";
 import { log } from "../utils/log";
 
 export const getAllEvents = createAsyncThunk(
@@ -35,6 +41,21 @@ export const deleteOneEvent = createAsyncThunk("events/delete", async (id) => {
     log.error("DELETE_EVENT", e.response);
   }
 });
+
+export const updateOneEvent = createAsyncThunk(
+  "events/update",
+  async ({ _id, data: values }) => {
+    try {
+      const { data } = await updateEvent(_id, values);
+      log.success("UPDATE_EVENT", data);
+      message.success("Güncelleme işlemi başarılı!");
+      return data;
+    } catch (e) {
+      log.error("UPDATE_EVENT", e.response);
+      message.error(e?.response);
+    }
+  }
+);
 
 export const eventSlice = createSlice({
   name: "persons",
@@ -80,6 +101,20 @@ export const eventSlice = createSlice({
       state.loading = false;
     });
     builder.addCase(deleteOneEvent.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(updateOneEvent.pending, (state) => {
+      state.error = null;
+      state.pending = true;
+    });
+    builder.addCase(updateOneEvent.fulfilled, (state, action) => {
+      state.data = state.data.map((event) =>
+        event?._id !== action.payload?._id ? event : action.payload
+      );
+      state.loading = false;
+    });
+    builder.addCase(updateOneEvent.rejected, (state, action) => {
       state.error = action.payload;
       state.loading = false;
     });
