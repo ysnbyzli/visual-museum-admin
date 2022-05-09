@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Avatar, Image, Timeline, Modal } from "antd";
+import MDEditor from "@uiw/react-md-editor";
 import { findById } from "../../api/request";
 import { log } from "../../utils/log";
 import { encodeDate } from "../../utils/date";
@@ -54,8 +55,17 @@ const DetailPerson = () => {
   return (
     <div className="pt-10">
       <div className="flex justify-between">
-        <Avatar shape="square" size={128} src={person?.photo} />
-        <AddEvent />
+        <Image
+          width={200}
+          src={person?.photo}
+          placeholder={
+            <Image preview={false} src={person?.photo} width={200} />
+          }
+        />
+        <AddEvent _id={id} />
+      </div>
+      <div data-color-mode="light" className="my-3 mb-10">
+        <MDEditor.Markdown source={person?.description} />
       </div>
       <div className="flex justify-center items-center">
         <Timeline mode="alternate">

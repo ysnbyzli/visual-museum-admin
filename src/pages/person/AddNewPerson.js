@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, DatePicker, Form, Input, message } from "antd";
+import MDEditor from "@uiw/react-md-editor";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { addNewPerson } from "../../store/personSlice";
@@ -14,11 +15,18 @@ const dummyRequest = ({ file, onSuccess }) => {
 const AddNewPerson = () => {
   const [form] = Form.useForm();
   const navigate = useNavigate();
-
+  const [description, setDescription] = useState("");
   const dispatch = useDispatch();
 
   const onSubmit = (values) => {
-    dispatch(addNewPerson({ ...values, photo: values.photo.file.thumbUrl }));
+    console.log(values);
+    dispatch(
+      addNewPerson({
+        ...values,
+        description,
+        photo: values.photo.file.thumbUrl,
+      })
+    );
     form.resetFields();
     navigate("/persons");
   };
@@ -32,9 +40,11 @@ const AddNewPerson = () => {
         console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
+        message.success(`${info.file.name} fotoğraf başarıyla yüklendi.`);
       } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
+        message.error(
+          `${info.file.name} fotoğraf yüklenme sırasında bir hata oluştu.`
+        );
       }
     },
     onDrop(e) {
@@ -55,6 +65,7 @@ const AddNewPerson = () => {
           }}
           onFinish={onSubmit}
           className="w-full"
+          form={form}
         >
           <div className="flex gap-5">
             <Form.Item
@@ -99,6 +110,12 @@ const AddNewPerson = () => {
               <DatePicker className="w-full" placeholder="Ölüm Tarihi" />
             </Form.Item>
           </div>
+          <Form.Item>
+            <div data-color-mode="light">
+              <MDEditor value={description} onChange={setDescription} />
+            </div>
+          </Form.Item>
+
           <Form.Item
             name="photo"
             rules={[

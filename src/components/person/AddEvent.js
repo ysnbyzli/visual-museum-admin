@@ -12,7 +12,7 @@ const dummyRequest = ({ file, onSuccess }) => {
 
 const { Dragger } = Upload;
 
-const AddEvent = () => {
+const AddEvent = ({ _id }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [files, setFiles] = useState([]);
   const dispatch = useDispatch();
@@ -25,6 +25,7 @@ const AddEvent = () => {
 
   const onSubmit = (values) => {
     const data = {
+      person: _id,
       ...values,
       photos: files.map((file) => file.thumbUrl).filter(Boolean),
     };

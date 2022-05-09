@@ -2,15 +2,12 @@ import React from "react";
 import { Menu } from "antd";
 import {
   HomeOutlined,
-  CalendarOutlined,
-  AppstoreOutlined,
-  SettingOutlined,
-  LinkOutlined,
+  SolutionOutlined,
+  PlusCircleOutlined,
   TeamOutlined,
   UserAddOutlined,
   TableOutlined,
 } from "@ant-design/icons";
-import { ROUTES } from "../../routes";
 import { Link } from "react-router-dom";
 
 const { SubMenu } = Menu;
@@ -33,6 +30,14 @@ const Sidebar = () => {
         </Menu.Item>
         <Menu.Item key="3" icon={<UserAddOutlined />}>
           <Link to="/persons/add">Ekle</Link>
+        </Menu.Item>
+      </SubMenu>
+      <SubMenu key="sub2" icon={<SolutionOutlined />} title="Kategoriler">
+        <Menu.Item key="4" icon={<TableOutlined />}>
+          <Link to={"/categories"}>Listele</Link>
+        </Menu.Item>
+        <Menu.Item key="5" icon={<PlusCircleOutlined />}>
+          <Link to="/categories/add">Ekle</Link>
         </Menu.Item>
       </SubMenu>
     </Menu>
