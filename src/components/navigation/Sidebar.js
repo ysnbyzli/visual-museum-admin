@@ -2,8 +2,7 @@ import React from "react";
 import { Menu } from "antd";
 import {
   HomeOutlined,
-  SolutionOutlined,
-  PlusCircleOutlined,
+  HolderOutlined,
   TeamOutlined,
   UserAddOutlined,
   TableOutlined,
@@ -32,14 +31,9 @@ const Sidebar = () => {
           <Link to="/persons/add">Ekle</Link>
         </Menu.Item>
       </SubMenu>
-      <SubMenu key="sub2" icon={<SolutionOutlined />} title="Kategoriler">
-        <Menu.Item key="4" icon={<TableOutlined />}>
-          <Link to={"/categories"}>Listele</Link>
-        </Menu.Item>
-        <Menu.Item key="5" icon={<PlusCircleOutlined />}>
-          <Link to="/categories/add">Ekle</Link>
-        </Menu.Item>
-      </SubMenu>
+      <Menu.Item key={"2"} icon={<HolderOutlined />}>
+        <Link to={"/categories"}>Kategoriler</Link>
+      </Menu.Item>
     </Menu>
   );
 };

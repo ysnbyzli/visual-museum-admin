@@ -33,3 +33,15 @@ export const deleteEvent = (id) => MuseumAPI.delete(`/events/${id}`);
 export const getOneEvent = (id) => MuseumAPI.get(`/events/${id}`);
 
 export const updateEvent = (id, data) => MuseumAPI.patch(`/events/${id}`, data);
+
+/**
+ *
+ * Categories
+ *
+ */
+
+export const getAllCategories = () => MuseumAPI.get("/categories");
+
+export const deleteCategory = (id) => MuseumAPI.delete(`/categories/${id}`);
+
+export const addCategory = (data) => MuseumAPI.post(`/categories`, data);

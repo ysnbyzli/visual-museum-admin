@@ -81,24 +81,18 @@ const Person = () => {
       title: "",
       key: "action",
       render: (text, record) => (
-        <Space size="middle">
+        <div className="flex justify-end gap-5">
           <EditOutlined
             style={{ color: "#3498db" }}
             className="cursor-pointer"
-            onClick={() => {
-              setSelectedUpdatePerson(record);
-              showUpdateModal(true);
-            }}
+            onClick={() => {}}
           />
           <DeleteOutlined
             style={{ color: "#e74c3c" }}
             className="cursor-pointer"
-            onClick={() => {
-              setSelectedDeletePerson(record);
-              showDeleteModal(true);
-            }}
+            onClick={() => {}}
           />
-        </Space>
+        </div>
       ),
     },
   ];
