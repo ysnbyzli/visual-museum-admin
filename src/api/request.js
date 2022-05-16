@@ -45,3 +45,8 @@ export const getAllCategories = () => MuseumAPI.get("/categories");
 export const deleteCategory = (id) => MuseumAPI.delete(`/categories/${id}`);
 
 export const addCategory = (data) => MuseumAPI.post(`/categories`, data);
+
+export const getOneCategory = (id) => MuseumAPI.get(`/categories/${id}`);
+
+export const updateCategory = (id, data) =>
+  MuseumAPI.patch(`/categories/${id}`, data);

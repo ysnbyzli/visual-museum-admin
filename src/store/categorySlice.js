@@ -1,6 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { message } from "antd";
-import { getAllCategories, deleteCategory, addCategory } from "../api/request";
+import {
+  getAllCategories,
+  deleteCategory,
+  addCategory,
+  updateCategory,
+} from "../api/request";
 import { log } from "../utils/log";
 
 export const fetchAllCategories = createAsyncThunk(
@@ -42,6 +47,21 @@ export const addNewCategory = createAsyncThunk(
     } catch (error) {
       console.log(error);
       return rejectWithValue(error.response);
+    }
+  }
+);
+
+export const updateOneCategory = createAsyncThunk(
+  "categories/updateCategory",
+  async ({ _id, data: values }, { rejectWithValue }) => {
+    try {
+      const { data } = await updateCategory(_id, values);
+      log.success("UPDATE_CATEGORY_REQUEST", data);
+      message.success("Kategori başarıyla güncellendi!");
+      return data;
+    } catch (e) {
+      log.error("UPDATE_CATEGORY_REQUEST", e.response);
+      return rejectWithValue(e.response);
     }
   }
 );
@@ -89,6 +109,20 @@ export const categorySlice = createSlice({
       state.loading = false;
     });
     builder.addCase(addNewCategory.rejected, (state, action) => {
+      state.error = action.payload;
+      state.loading = false;
+    });
+    builder.addCase(updateOneCategory.pending, (state) => {
+      state.error = null;
+      state.loading = true;
+    });
+    builder.addCase(updateOneCategory.fulfilled, (state, action) => {
+      state.data = state.data.map((category) =>
+        category?._id === action.payload?._id ? action.payload : category
+      );
+      state.loading = false;
+    });
+    builder.addCase(updateOneCategory.rejected, (state, action) => {
       state.error = action.payload;
       state.loading = false;
     });

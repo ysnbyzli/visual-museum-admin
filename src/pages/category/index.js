@@ -11,18 +11,21 @@ import {
   EditOutlined,
   ExclamationCircleOutlined,
 } from "@ant-design/icons";
+import UpdateCategoryModal from "../../components/modal/category/UpdateCategoryModal";
 
 const { confirm } = Modal;
 
 const Index = () => {
   const [deletedCategory, setDeletedCategory] = useState(null);
+  const [updatedCategory, setUpdatedCategory] = useState(null);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const { data, loading } = useSelector((state) => state.categories);
   const [form] = Form.useForm();
   const showModal = () => {
     setIsAddModalVisible(true);
   };
-  console.log(loading);
+
   const handleOk = () => {
     setIsAddModalVisible(false);
   };
@@ -64,7 +67,7 @@ const Index = () => {
       dataIndex: "title",
       key: "title",
       sorter: (a, b) => {
-        return a?.title - b?.title;
+        return a?.title.localeCompare(b?.title);
       },
       filters: [
         ...data.map((category) => ({
@@ -84,7 +87,10 @@ const Index = () => {
           <EditOutlined
             style={{ color: "#3498db" }}
             className="cursor-pointer"
-            onClick={() => {}}
+            onClick={() => {
+              setUpdatedCategory(record?._id);
+              setIsUpdateModalVisible(true);
+            }}
           />
           <DeleteOutlined
             style={{ color: "#e74c3c" }}
@@ -106,6 +112,7 @@ const Index = () => {
 
   return (
     <div className="py-10">
+      <h1 className="text-3xl">Kategoriler</h1>
       <div className="mb-5 flex justify-end">
         <Button loading={loading} type="primary" onClick={showModal}>
           Kategori Ekle
@@ -151,6 +158,11 @@ const Index = () => {
           </Form.Item>
         </Form>
       </Modal>
+      <UpdateCategoryModal
+        isModalVisible={isUpdateModalVisible}
+        setIsModalVisible={setIsUpdateModalVisible}
+        categoryId={updatedCategory}
+      />
     </div>
   );
 };
