@@ -50,3 +50,19 @@ export const getOneCategory = (id) => MuseumAPI.get(`/categories/${id}`);
 
 export const updateCategory = (id, data) =>
   MuseumAPI.patch(`/categories/${id}`, data);
+
+/**
+ *
+ * Tags
+ *
+ */
+
+export const getAllTags = () => MuseumAPI.get("/tags");
+
+export const addTag = (data) => MuseumAPI.post("/tags", data);
+
+export const getOneTag = (id) => MuseumAPI.get(`/tags/${id}`);
+
+export const updateTag = (id, data) => MuseumAPI.patch(`/tags/${id}`, data);
+
+export const deleteTag = (id) => MuseumAPI.delete(`/tags/${id}`);

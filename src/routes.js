@@ -13,6 +13,7 @@ import AddNewPerson from "./pages/person/AddNewPerson";
 import Home from "./pages/Home";
 import DetailPerson from "./pages/person/DetailPerson";
 import Category from "./pages/category";
+import Tags from "./pages/tags";
 
 export const ROUTES = [
   {
@@ -51,6 +52,13 @@ export const ROUTES = [
     key: "CATEGORIES",
     path: "/categories",
     element: <Category />,
+  },
+  {
+    id: "6",
+    title: "Etiketler",
+    key: "TAGS",
+    path: "/tags",
+    element: <Tags />,
   },
 ];
 

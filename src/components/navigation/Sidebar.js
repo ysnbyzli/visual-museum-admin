@@ -6,6 +6,7 @@ import {
   TeamOutlined,
   UserAddOutlined,
   TableOutlined,
+  TagOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -31,8 +32,11 @@ const Sidebar = () => {
           <Link to="/persons/add">Ekle</Link>
         </Menu.Item>
       </SubMenu>
-      <Menu.Item key={"2"} icon={<HolderOutlined />}>
+      <Menu.Item key={"4"} icon={<HolderOutlined />}>
         <Link to={"/categories"}>Kategoriler</Link>
+      </Menu.Item>
+      <Menu.Item key={"5"} icon={<TagOutlined />}>
+        <Link to={"/tags"}>Etiketler</Link>
       </Menu.Item>
     </Menu>
   );
