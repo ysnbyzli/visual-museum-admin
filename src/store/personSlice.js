@@ -6,6 +6,7 @@ import {
   deletePerson,
   updatePerson,
 } from "../api/request";
+import { yearDifferenceBetweenTwoDates } from "../utils/date";
 
 export const addNewPerson = createAsyncThunk(
   "persons/add",
@@ -88,7 +89,15 @@ export const personSlice = createSlice({
       state.loading = true;
     });
     builder.addCase(fetchAllPerson.fulfilled, (state, action) => {
-      state.data = action.payload;
+      state.data = action.payload.map((person) => ({
+        ...person,
+        fullName: `${person?.firstName} ${person?.lastName}`,
+        category: person?.category?.title,
+        age: yearDifferenceBetweenTwoDates(
+          person?.dateOfBirth,
+          person?.dateOfDeath
+        ),
+      }));
       state.loading = false;
     });
     builder.addCase(fetchAllPerson.rejected, (state, action) => {
