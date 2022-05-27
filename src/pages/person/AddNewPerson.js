@@ -95,8 +95,9 @@ const AddNewPerson = () => {
     })();
   }, []);
   return (
-    <div className="flex flex-col items-center">
-      <div className="w-[1000px]">
+    <div className="flex flex-col items-center pb-10">
+      <h1 className="self-start text-4xl">Kişi Ekle</h1>
+      <div className="w-full flex ">
         <Form
           initialValues={{
             firstName: "",

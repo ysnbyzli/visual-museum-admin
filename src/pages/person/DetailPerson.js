@@ -1,19 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Avatar, Image, Timeline, Modal, Tag } from "antd";
+import { Modal, Carousel } from "antd";
 import MDEditor from "@uiw/react-md-editor";
 import { findById } from "../../api/request";
 import { log } from "../../utils/log";
-import { encodeDate } from "../../utils/date";
-import AddEvent from "../../components/person/AddEvent";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteOneEvent, getAllEvents } from "../../store/eventSlice";
-import {
-  ExclamationCircleOutlined,
-  DeleteOutlined,
-  EditOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { getAllEvents } from "../../store/eventSlice";
+
 import Header from "../../components/person/Header";
 
 const { confirm } = Modal;
@@ -37,8 +30,9 @@ const DetailPerson = () => {
   }, [id]);
 
   return (
-    <div className="relative">
+    <div className="relative pb-10">
       <Header person={person} />
+
       <article data-color-mode="light" className="mt-12 mb-10">
         <h3 className="text-3xl pb-2">Hakkında</h3>
         <MDEditor.Markdown
