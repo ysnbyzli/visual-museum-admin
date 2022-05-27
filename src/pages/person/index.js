@@ -16,16 +16,11 @@ import {
 import Text from "antd/lib/typography/Text";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  deleteOnePerson,
-  fetchAllPerson,
-  updateOnePerson,
-} from "../../store/personSlice";
+import { deleteOnePerson, fetchAllPerson } from "../../store/personSlice";
 import { yearDifferenceBetweenTwoDates } from "../../utils/date";
-import moment from "moment";
+
 import { Link } from "react-router-dom";
 import UpdatePersonModal from "../../components/modal/person/UpdatePersonModal";
-import { deleteOneTag } from "../../store/tagSlice";
 
 const { confirm } = Modal;
 
@@ -36,10 +31,6 @@ const Person = () => {
   const [isModalUpdateVisible, setIsModalUpdateVisible] = useState(false);
   const [selectedDeletePerson, setSelectedDeletePerson] = useState(null);
   const [selectedUpdatePerson, setSelectedUpdatePerson] = useState(null);
-
-  const showDeleteModal = () => {
-    setIsModalDeleteVisible(true);
-  };
 
   const handleDeleteOk = () => {
     dispatch(deleteOnePerson(selectedDeletePerson?._id));
@@ -80,11 +71,20 @@ const Person = () => {
       title: "Ad Soyad",
       dataIndex: "name",
       key: "name",
+      sorter: (a, b) => {
+        return a?.fullName.localeCompare(b?.fullName);
+      },
+      filters: [
+        ...data.map(({ fullName }) => ({
+          text: fullName,
+          value: fullName,
+        })),
+      ],
+      onFilter: (value, record) => record.fullName.startsWith(value),
+      filterSearch: true,
       render: (text, record) => (
         <Text>
-          <Link to={`/persons/${record._id}`}>
-            {record?.firstName} {record?.lastName}
-          </Link>
+          <Link to={`/persons/${record._id}`}>{record?.fullName}</Link>
         </Text>
       ),
     },
@@ -92,30 +92,25 @@ const Person = () => {
       title: "Yaş",
       dataIndex: "age",
       key: "age",
-      render: (text, record) => (
-        <Text>
-          {yearDifferenceBetweenTwoDates(
-            record?.dateOfBirth,
-            record?.dateOfDeath
-          )}
-        </Text>
-      ),
+      sorter: (a, b) => a?.age - b?.age,
+      render: (text, record) => <Text>{record?.age}</Text>,
     },
     {
       title: "Kategori",
       dataIndex: "category",
       key: "category",
       sorter: (a, b) => {
-        return a?.category?.title.localeCompare(b?.category?.title);
+        return a?.category.localeCompare(b?.category);
       },
       filters: [
         ...data.map(({ category }) => ({
-          text: category?.title,
-          value: category?.title,
+          text: category,
+          value: category,
         })),
       ],
+      onFilter: (value, record) => record.category.startsWith(value),
       filterSearch: true,
-      render: (text, record) => <Text>{record?.category?.title}</Text>,
+      render: (text, record) => <Text>{record?.category}</Text>,
     },
     {
       title: "Etiketler",
