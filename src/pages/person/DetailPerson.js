@@ -37,10 +37,14 @@ const DetailPerson = () => {
   }, [id]);
 
   return (
-    <div className="pt-10 relative">
+    <div className="relative">
       <Header person={person} />
-      <article data-color-mode="light" className="my-3 mb-10">
-        <MDEditor.Markdown source={person?.description} />{" "}
+      <article data-color-mode="light" className="mt-12 mb-10">
+        <h3 className="text-3xl pb-2">Hakkında</h3>
+        <MDEditor.Markdown
+          source={person?.description}
+          style={{ background: "none" }}
+        />
       </article>
     </div>
   );

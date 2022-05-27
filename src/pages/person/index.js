@@ -155,7 +155,8 @@ const Person = () => {
   ];
 
   return (
-    <div className="pt-10">
+    <div>
+      <h1 className="text-4xl">Kişiler</h1>
       <Table columns={columns} dataSource={data} loading={loading} />
       <Modal
         title={`${selectedDeletePerson?.firstName} ${selectedDeletePerson?.lastName}`}

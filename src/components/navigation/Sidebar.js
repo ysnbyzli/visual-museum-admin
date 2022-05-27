@@ -15,11 +15,10 @@ const { SubMenu } = Menu;
 const Sidebar = () => {
   return (
     <Menu
-      style={{ width: 256, height: "100%" }}
       defaultSelectedKeys={["1"]}
       defaultOpenKeys={["sub1"]}
       mode="inline"
-      theme="light"
+      theme="dark"
     >
       <Menu.Item key={"1"} icon={<HomeOutlined />}>
         <Link to={"/"}>Anasayfa</Link>

@@ -95,7 +95,7 @@ const AddNewPerson = () => {
     })();
   }, []);
   return (
-    <div className="flex flex-col items-center pt-10">
+    <div className="flex flex-col items-center">
       <div className="w-[1000px]">
         <Form
           initialValues={{

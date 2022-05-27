@@ -62,6 +62,7 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [description, setDescription] = useState(person?.description);
   const dispatch = useDispatch();
   useEffect(() => {
     (async () => {
@@ -114,7 +115,7 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
         (category) => category?._id === values?.category
       );
       const existingTags = tags.filter((tag) => values.tags.includes(tag?._id));
-      await updatePerson(person?._id, values);
+      await updatePerson(person?._id, { ...values, description });
       const customizedValue = {
         ...values,
         _id: person?._id,
@@ -122,6 +123,7 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
         tags: existingTags,
         dateOfBirth: values?.dateOfBirth?._i,
         dateOfDeath: values?.dateOfDeath?._i,
+        description,
       };
       dispatch(handleUpdatePerson(customizedValue));
       setIsLoading(false);
@@ -162,7 +164,6 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
           photo: person?.photo,
           category: person?.category?._id,
           tags: person?.tags?.map((tag) => tag?._id),
-          description: person?.description,
         }}
         form={form}
         labelCol={{ span: 6 }}
@@ -268,13 +269,9 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
           wrapperCol={{ span: 21 }}
           labelCol={{ span: 3 }}
           label="Hakkında"
-          name="description"
         >
           <div data-color-mode="light">
-            <MDEditor
-              value={form.getFieldValue("description")}
-              onChange={(value) => form.setFieldsValue("description", value)}
-            />
+            <MDEditor value={description} onChange={setDescription} />
           </div>
         </Form.Item>
         <Form.Item

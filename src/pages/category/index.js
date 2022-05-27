@@ -111,7 +111,7 @@ const Index = () => {
   };
 
   return (
-    <div className="py-10">
+    <div>
       <h1 className="text-3xl">Kategoriler</h1>
       <div className="mb-5 flex justify-end">
         <Button loading={loading} type="primary" onClick={showModal}>
