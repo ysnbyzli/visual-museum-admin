@@ -62,7 +62,14 @@ export const personSlice = createSlice({
     loading: false,
     error: null,
   },
-  reducers: {},
+  reducers: {
+    handleUpdatePerson: (state, action) => {
+      state.data = state.data.map((person) =>
+        person?._id !== action.payload?._id ? person : action.payload
+      );
+      state.loading = false;
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(addNewPerson.pending, (state) => {
       state.error = null;
@@ -119,4 +126,5 @@ export const personSlice = createSlice({
   },
 });
 
+export const { handleUpdatePerson } = personSlice.actions;
 export default personSlice.reducer;

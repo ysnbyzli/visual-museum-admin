@@ -1,5 +1,18 @@
-import { Table, Space, Modal, Button, Form, DatePicker, Input } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  Table,
+  Space,
+  Modal,
+  Button,
+  Form,
+  DatePicker,
+  Input,
+  Tag,
+} from "antd";
+import {
+  DeleteOutlined,
+  EditOutlined,
+  ExclamationCircleOutlined,
+} from "@ant-design/icons";
 import Text from "antd/lib/typography/Text";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,6 +24,10 @@ import {
 import { yearDifferenceBetweenTwoDates } from "../../utils/date";
 import moment from "moment";
 import { Link } from "react-router-dom";
+import UpdatePersonModal from "../../components/modal/person/UpdatePersonModal";
+import { deleteOneTag } from "../../store/tagSlice";
+
+const { confirm } = Modal;
 
 const Person = () => {
   const dispatch = useDispatch();
@@ -33,23 +50,30 @@ const Person = () => {
     setIsModalDeleteVisible(false);
   };
 
-  const showUpdateModal = () => {
-    setIsModalUpdateVisible(true);
-  };
-
-  const handleUpdateCancel = () => {
-    setIsModalUpdateVisible(false);
-  };
-
-  const onUpdateSubmit = (values, id) => {
-    dispatch(updateOnePerson({ id, values }));
-    setSelectedUpdatePerson(null);
-    setIsModalUpdateVisible(false);
-  };
-
   useEffect(() => {
     dispatch(fetchAllPerson());
   }, []);
+
+  useEffect(() => {
+    selectedDeletePerson && showDeleteConfirm();
+  }, [selectedDeletePerson]);
+
+  const showDeleteConfirm = () =>
+    confirm({
+      title: "Kişiyi silmek istediğinize emin misiniz?",
+      icon: <ExclamationCircleOutlined />,
+      content: "Silme işlemi sonrasında kişiye ait tüm bilgiler silinecektir!",
+      okText: "Evet",
+      okType: "danger",
+      cancelText: "Hayır",
+      onOk() {
+        dispatch(deleteOnePerson(selectedDeletePerson));
+        setSelectedDeletePerson(null);
+      },
+      onCancel() {
+        setSelectedDeletePerson(null);
+      },
+    });
 
   const columns = [
     {
@@ -78,6 +102,34 @@ const Person = () => {
       ),
     },
     {
+      title: "Kategori",
+      dataIndex: "category",
+      key: "category",
+      sorter: (a, b) => {
+        return a?.category?.title.localeCompare(b?.category?.title);
+      },
+      filters: [
+        ...data.map(({ category }) => ({
+          text: category?.title,
+          value: category?.title,
+        })),
+      ],
+      filterSearch: true,
+      render: (text, record) => <Text>{record?.category?.title}</Text>,
+    },
+    {
+      title: "Etiketler",
+      dataIndex: "tags",
+      key: "tags",
+      render: (text, record) => (
+        <div>
+          {record?.tags.map(({ color, title }) => (
+            <Tag color={color}>{title}</Tag>
+          ))}
+        </div>
+      ),
+    },
+    {
       title: "",
       key: "action",
       render: (text, record) => (
@@ -85,12 +137,17 @@ const Person = () => {
           <EditOutlined
             style={{ color: "#3498db" }}
             className="cursor-pointer"
-            onClick={() => {}}
+            onClick={() => {
+              setSelectedUpdatePerson(record);
+              setIsModalUpdateVisible(true);
+            }}
           />
           <DeleteOutlined
             style={{ color: "#e74c3c" }}
             className="cursor-pointer"
-            onClick={() => {}}
+            onClick={() => {
+              setSelectedDeletePerson(record?._id);
+            }}
           />
         </div>
       ),
@@ -122,78 +179,13 @@ const Person = () => {
       >
         <p>Silmek istediğinize emin misiniz?</p>
       </Modal>
-      <Modal
-        title="Güncelle"
-        visible={isModalUpdateVisible}
-        onCancel={handleUpdateCancel}
-        footer={[
-          <Button key="back" onClick={handleUpdateCancel}>
-            İptal
-          </Button>,
-        ]}
-      >
-        <Form
-          initialValues={{
-            firstName: selectedUpdatePerson?.firstName,
-            lastName: selectedUpdatePerson?.lastName,
-            dateOfBirth: moment(selectedUpdatePerson?.dateOfBirth),
-            dateOfDeath: moment(selectedUpdatePerson?.dateOfDeath),
-          }}
-          onFinish={(values) =>
-            onUpdateSubmit(values, selectedUpdatePerson?._id)
-          }
-          className="w-full"
-        >
-          <div className="flex gap-5">
-            <Form.Item
-              className="w-full"
-              name="firstName"
-              rules={[
-                { required: true, message: "Ad alanı boş bırakılamaz!" },
-                { whitespace: true, message: "Ad alanı boş bırakılamaz!" },
-                { min: 3, message: "Minumum 3 karakter olmalıdır!" },
-              ]}
-              hasFeedback
-            >
-              <Input placeholder="Ad" />
-            </Form.Item>
-            <Form.Item
-              className="w-full"
-              name="lastName"
-              rules={[
-                { required: true, message: "Soyad alanı boş bırakılamaz!" },
-                { whitespace: true, message: "Ad alanı boş bırakılamaz!" },
-              ]}
-              hasFeedback
-            >
-              <Input placeholder="Soyad" />
-            </Form.Item>
-          </div>
-          <div className="flex gap-5">
-            <Form.Item
-              className="w-full"
-              name="dateOfBirth"
-              rules={[
-                {
-                  required: true,
-                  message: "Doğum Tarihi alanı boş bırakılamaz!",
-                },
-              ]}
-              hasFeedback
-            >
-              <DatePicker className="w-full" placeholder="Doğum Tarihi" />
-            </Form.Item>
-            <Form.Item className="w-full" name="dateOfDeath" hasFeedback>
-              <DatePicker className="w-full" placeholder="Ölüm Tarihi" />
-            </Form.Item>
-          </div>
-          <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full">
-              Güncelle
-            </Button>
-          </Form.Item>
-        </Form>
-      </Modal>
+      {selectedUpdatePerson && (
+        <UpdatePersonModal
+          isModalVisible={isModalUpdateVisible}
+          person={selectedUpdatePerson}
+          setIsModalVisible={setIsModalUpdateVisible}
+        />
+      )}
     </div>
   );
 };

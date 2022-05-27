@@ -41,7 +41,6 @@ function Index() {
       okType: "danger",
       cancelText: "Hayır",
       onOk() {
-        console.log(deletedTag);
         dispatch(deleteOneTag(deletedTag));
         setDeletedTag(null);
       },

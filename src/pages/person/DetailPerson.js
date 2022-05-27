@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Avatar, Image, Timeline, Modal } from "antd";
+import { Avatar, Image, Timeline, Modal, Tag } from "antd";
 import MDEditor from "@uiw/react-md-editor";
 import { findById } from "../../api/request";
 import { log } from "../../utils/log";
@@ -12,17 +12,15 @@ import {
   ExclamationCircleOutlined,
   DeleteOutlined,
   EditOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
-import UpdateEventModal from "../../components/modal/event/UpdateEventModal";
+import Header from "../../components/person/Header";
 
 const { confirm } = Modal;
 
 const DetailPerson = () => {
   const { id } = useParams();
   const [person, setPerson] = useState(null);
-  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
-  const [selectedUpdatedEvent, setSelectedUpdatedEvent] = useState(null);
-  const { data } = useSelector((state) => state.events);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -38,89 +36,12 @@ const DetailPerson = () => {
     dispatch(getAllEvents(id));
   }, [id]);
 
-  const showDeleteConfirm = (_id) => {
-    confirm({
-      title: "Olayı silmek istediğinize emin misiniz?",
-      icon: <ExclamationCircleOutlined />,
-      content: "Bu işlem geri alınamaz!",
-      okText: "Evet",
-      okType: "danger",
-      cancelText: "Hayır",
-      onOk() {
-        dispatch(deleteOneEvent(_id));
-      },
-    });
-  };
-
   return (
-    <div className="pt-10">
-      <div className="flex justify-between">
-        <Image
-          width={200}
-          src={person?.photo}
-          placeholder={
-            <Image preview={false} src={person?.photo} width={200} />
-          }
-        />
-        <AddEvent _id={id} />
-      </div>
-      <div data-color-mode="light" className="my-3 mb-10">
-        <MDEditor.Markdown source={person?.description} />
-      </div>
-      <div className="flex justify-center items-center">
-        <Timeline mode="alternate">
-          {data.map(
-            ({ _id, title, description, startDate, endDate, photos }) => (
-              <Timeline.Item
-                key={_id}
-                label={
-                  endDate
-                    ? `${encodeDate(startDate)} - ${encodeDate(endDate)}`
-                    : `${encodeDate(startDate)}`
-                }
-              >
-                <div className="flex flex-col">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xl">{title}</h3>
-                    <div className="mr-3 flex gap-4">
-                      <EditOutlined
-                        style={{ color: "#3498db" }}
-                        className="cursor-pointer"
-                        onClick={() => {
-                          setSelectedUpdatedEvent(_id);
-                          setIsUpdateModalVisible(true);
-                        }}
-                      />
-                      <DeleteOutlined
-                        style={{ color: "#e74c3c" }}
-                        className="cursor-pointer"
-                        onClick={() => showDeleteConfirm(_id)}
-                      />
-                    </div>
-                  </div>
-
-                  <p>{description}</p>
-                  <div className="flex gap-2">
-                    <Image.PreviewGroup>
-                      {photos.map((photo) => (
-                        <Image width={200} src={photo} />
-                      ))}
-                    </Image.PreviewGroup>
-                  </div>
-                </div>
-              </Timeline.Item>
-            )
-          )}
-        </Timeline>
-      </div>
-      {selectedUpdatedEvent && (
-        <UpdateEventModal
-          setSelectedUpdatedEvent={setSelectedUpdatedEvent}
-          isModalVisible={isUpdateModalVisible}
-          setIsModalVisible={setIsUpdateModalVisible}
-          _id={selectedUpdatedEvent}
-        />
-      )}
+    <div className="pt-10 relative">
+      <Header person={person} />
+      <article data-color-mode="light" className="my-3 mb-10">
+        <MDEditor.Markdown source={person?.description} />{" "}
+      </article>
     </div>
   );
 };
