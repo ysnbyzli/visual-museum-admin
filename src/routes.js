@@ -14,6 +14,7 @@ import Home from "./pages/Home";
 import DetailPerson from "./pages/person/DetailPerson";
 import Category from "./pages/category";
 import Tags from "./pages/tags";
+import CreateEvent from "./pages/events/CreateEvent";
 
 export const ROUTES = [
   {
@@ -59,6 +60,13 @@ export const ROUTES = [
     key: "TAGS",
     path: "/tags",
     element: <Tags />,
+  },
+  {
+    id: "7",
+    title: "Olay Oluştur",
+    key: "EVENT_CREATE",
+    path: "/events/create",
+    element: <CreateEvent />,
   },
 ];
 

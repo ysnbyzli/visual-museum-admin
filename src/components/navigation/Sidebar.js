@@ -7,6 +7,8 @@ import {
   UserAddOutlined,
   TableOutlined,
   TagOutlined,
+  PicCenterOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 
@@ -37,6 +39,11 @@ const Sidebar = () => {
       <Menu.Item key={"5"} icon={<TagOutlined />}>
         <Link to={"/tags"}>Etiketler</Link>
       </Menu.Item>
+      <SubMenu key="sub2" icon={<PicCenterOutlined />} title="Olaylar">
+        <Menu.Item key="6" icon={<PlusOutlined />}>
+          <Link to="/events/create">Oluştur</Link>
+        </Menu.Item>
+      </SubMenu>
     </Menu>
   );
 };
