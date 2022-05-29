@@ -40,7 +40,10 @@ const Sidebar = () => {
         <Link to={"/tags"}>Etiketler</Link>
       </Menu.Item>
       <SubMenu key="sub2" icon={<PicCenterOutlined />} title="Olaylar">
-        <Menu.Item key="6" icon={<PlusOutlined />}>
+        <Menu.Item key="6" icon={<TableOutlined />}>
+          <Link to="/events">Listele</Link>
+        </Menu.Item>
+        <Menu.Item key="7" icon={<PlusOutlined />}>
           <Link to="/events/create">Oluştur</Link>
         </Menu.Item>
       </SubMenu>

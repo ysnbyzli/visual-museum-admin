@@ -1,13 +1,4 @@
-import {
-  Table,
-  Space,
-  Modal,
-  Button,
-  Form,
-  DatePicker,
-  Input,
-  Tag,
-} from "antd";
+import { Table, Modal, Button, Tag } from "antd";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -17,7 +8,6 @@ import Text from "antd/lib/typography/Text";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteOnePerson, fetchAllPerson } from "../../store/personSlice";
-import { yearDifferenceBetweenTwoDates } from "../../utils/date";
 
 import { Link } from "react-router-dom";
 import UpdatePersonModal from "../../components/modal/person/UpdatePersonModal";

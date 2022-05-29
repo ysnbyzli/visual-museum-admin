@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Input, Modal, Form, Upload, message } from "antd";
-import { getOneEvent } from "../../../api/request";
-import { log } from "../../../utils/log";
-import { encodeDate } from "../../../utils/date";
+import { Button, DatePicker, Form, Input, Modal, Select, Upload } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { getAllPerson, getAllTags, updateEvent } from "../../../api/request";
 import moment from "moment";
-import { InboxOutlined } from "@ant-design/icons";
-import { useDispatch, useSelector } from "react-redux";
-import { updateOneEvent } from "../../../store/eventSlice";
+import { log } from "../../../utils/log";
 
 const dummyRequest = ({ file, onSuccess }) => {
   setTimeout(() => {
@@ -14,124 +11,268 @@ const dummyRequest = ({ file, onSuccess }) => {
   }, 0);
 };
 
-const { Dragger } = Upload;
+const getBase64 = (file) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+
+    reader.onload = () => resolve(reader.result);
+
+    reader.onerror = (error) => reject(error);
+  });
+
+const uploadButton = (
+  <div>
+    <PlusOutlined />
+    <div
+      style={{
+        marginTop: 8,
+      }}
+    >
+      Upload
+    </div>
+  </div>
+);
 
 const UpdateEventModal = ({
-  _id,
   isModalVisible,
   setIsModalVisible,
-  setSelectedUpdatedEvent,
+  event: {
+    _id,
+    title,
+    person,
+    description,
+    endDate,
+    startDate,
+    tags: dataTags,
+    photos,
+  },
+  setEvents,
+  events,
 }) => {
-  const [files, setFiles] = useState([]);
+  // data
+  const [persons, setPersons] = useState([]);
+  const [tags, setTags] = useState([]);
+  // pictures
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
+  const [previewTitle, setPreviewTitle] = useState("");
+  const [fileList, setFileList] = useState([]);
+  // loading
+  const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
-  const { loading } = useSelector((state) => state.events);
-  const dispatch = useDispatch();
 
-  const handleCancel = () => {
-    setSelectedUpdatedEvent(null);
-    setIsModalVisible(false);
+  const handleCancel = () => setPreviewVisible(false);
+
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+    setPreviewTitle(
+      file.name || file.url.substring(file.url.lastIndexOf("/") + 1)
+    );
   };
+
+  const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
+
+  useEffect(() => {
+    if (Array.isArray(photos) && photos.length > 0) {
+      setFileList(
+        photos.map((photo, index) => ({
+          uid: `${index}`,
+          name: `${index}`,
+          status: "done",
+          url: photo,
+        }))
+      );
+    }
+  }, [photos]);
 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await getOneEvent(_id);
-        log.success("GET_ONE_EVENT", data);
-        form.setFieldsValue({
-          title: data?.title,
-          description: data?.description,
-          startDate: data?.startDate ? moment(encodeDate(data?.startDate)) : "",
-          endDate: data?.endDate ? moment(encodeDate(data?.endDate)) : "",
-          file: data?.photos,
-        });
-      } catch (e) {
-        log.error("GET_ONE_EVENT", e.response);
-      }
+        const response = await getAllPerson();
+        setPersons(response?.data);
+      } catch (e) {}
+    })();
+    (async () => {
+      try {
+        const response = await getAllTags();
+        setTags(response?.data);
+      } catch (e) {}
     })();
   }, []);
 
-  const onSubmit = (values) => {
-    const data = {
-      ...values,
-      startDate: values.startDate?._d,
-      endDate: values.endDate?._d,
-    };
-    dispatch(updateOneEvent({ _id, data }));
-    handleCancel();
+  const onSubmit = async (values) => {
+    try {
+      const data = {
+        description: values?.description,
+        person: values?.person,
+        tags: values?.tags,
+        title: values?.title,
+        photos: fileList?.map(({ thumbUrl, url }) => thumbUrl || url),
+        startDate: values?.date[0]?._d,
+        endDate: values?.date[1]?._d,
+      };
+      const response = await updateEvent(_id, data);
+      setEvents(
+        events.map((event) =>
+          event?._id !== _id
+            ? event
+            : {
+                _id,
+                title: values?.title,
+                photos: fileList?.map(({ thumbUrl, url }) => thumbUrl || url),
+                startDate: values?.date[0]?._d,
+                endDate: values?.date[1]?._d,
+                description: values?.description,
+                tags: tags.filter((tag) => values?.tags?.includes(tag._id)),
+              }
+        )
+      );
+      setIsModalVisible(false);
+      log.success("UPDATE_EVENT", response.data);
+    } catch (e) {
+      log.error("UPDATE_EVENT", e.response);
+    }
   };
 
-  const props = {
-    name: "file",
-    multiple: true,
-    valuePropName: "fileList",
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        console.log(info.file, info.fileList);
-      }
-      if (status === "done") {
-        setFiles((prev) => [...prev, info.file]);
-        message.success(`${info.file.name} file uploaded successfully.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
-  };
   return (
     <Modal
-      title="Güncelle"
+      title={`${title} Adlı Olayı Güncelle`}
       visible={isModalVisible}
-      onCancel={handleCancel}
+      onCancel={() => setIsModalVisible(false)}
+      width={1000}
       footer={[
-        <Button danger onClick={handleCancel}>
+        <Button key="back" danger onClick={() => setIsModalVisible(false)}>
           İptal
         </Button>,
-        <Button
-          htmlType="submit"
-          form={"updateEvent"}
-          key="submit"
-          type="primary"
-          loading={loading}
-        >
+        <Button form="updateForm" key="submit" htmlType="submit" type="primary">
           Güncelle
         </Button>,
       ]}
     >
       <Form
-        initialValues={{ title: "" }}
+        id="updateForm"
         form={form}
-        name="updateEvent"
+        initialValues={{
+          title: title,
+          person: person,
+          description: description,
+          date: [moment(startDate), moment(endDate)],
+          photos: "",
+          tags: dataTags.map((tag) => tag?._id),
+        }}
+        name="control-hooks"
+        labelCol={{ span: 4 }}
+        labelAlign="left"
+        wrapperCol={{ span: 22 }}
         onFinish={onSubmit}
       >
-        <Form.Item name="title">
-          <Input placeholder="Başlık" />
+        <Form.Item
+          name="title"
+          label="Başlık"
+          rules={[
+            {
+              required: true,
+              message: "Başlık alanı zorunludur!",
+            },
+          ]}
+        >
+          <Input />
         </Form.Item>
-        <Form.Item name="description">
+        <Form.Item
+          name="person"
+          label="Kişi"
+          rules={[
+            {
+              required: true,
+              message: "Olay oluşturmak için bir kişi seçmelisiniz!",
+            },
+          ]}
+        >
+          <Select
+            allowClear
+            showSearch
+            filterOption={(input, option) =>
+              option.children.toLowerCase().includes(input.toLowerCase())
+            }
+          >
+            {persons?.map(({ _id, firstName, lastName }) => (
+              <Select.Option
+                value={_id}
+              >{`${firstName} ${lastName}`}</Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item
+          name="description"
+          label="Açıklama"
+          rules={[
+            {
+              required: true,
+              message: "Açıklama alanı zorunludur!",
+            },
+            {
+              min: 10,
+              message: "En az 10 karakter girilmelidir!",
+            },
+          ]}
+        >
           <Input.TextArea
-            rows={4}
-            style={{ resize: "none" }}
-            maxLength={300}
-            placeholder="Açıklama"
+            autoSize={{ minRows: 3, maxRows: 5 }}
+            maxLength={400}
           />
         </Form.Item>
-        <div className="flex gap-5">
-          <Form.Item className="w-full" name="startDate">
-            <DatePicker className="w-full" placeholder="Başlangıç Tarihi" />
-          </Form.Item>
-          <Form.Item className="w-full" name="endDate">
-            <DatePicker className="w-full" placeholder="Bitiş Tarihi" />
-          </Form.Item>
-        </div>
-        <Form.Item name="photos">
-          <Dragger {...props} listType="picture" customRequest={dummyRequest}>
-            <p className="ant-upload-drag-icon">
-              <InboxOutlined />
-            </p>
-            <p className="ant-upload-text">
-              Yüklemek için lütfen tıklayın veya bu alana sürükleyin
-            </p>
-          </Dragger>
+        <Form.Item
+          name="date"
+          label="Tarih Aralığı"
+          rules={[
+            {
+              required: true,
+              message: "Tarih aralığı alanı zorunludur!",
+            },
+          ]}
+        >
+          <DatePicker.RangePicker
+            className="w-full"
+            placeholder={["Başlangıç Tarihi", "Bitiş Tarihi"]}
+          />
+        </Form.Item>
+        <Form.Item name="tags" label="Etiketler">
+          <Select allowClear mode="tags">
+            {tags?.map(({ _id, title }) => (
+              <Select.Option value={_id}>{title}</Select.Option>
+            ))}
+          </Select>
+        </Form.Item>
+        <Form.Item label="Fotoğraf" name="photos">
+          <Upload
+            customRequest={dummyRequest}
+            listType="picture-card"
+            fileList={fileList}
+            onPreview={handlePreview}
+            onChange={handleChange}
+          >
+            {fileList.length >= 8 ? null : uploadButton}
+          </Upload>
+          <Modal
+            visible={previewVisible}
+            title={previewTitle}
+            footer={null}
+            onCancel={handleCancel}
+          >
+            <img
+              alt="example"
+              style={{
+                width: "100%",
+              }}
+              src={previewImage}
+            />
+          </Modal>
         </Form.Item>
       </Form>
     </Modal>

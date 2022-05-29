@@ -16,6 +16,19 @@ import { log } from "../../utils/log";
 
 const { Option } = Select;
 
+const uploadButton = (
+  <div>
+    <PlusOutlined />
+    <div
+      style={{
+        marginTop: 8,
+      }}
+    >
+      Upload
+    </div>
+  </div>
+);
+
 const dummyRequest = ({ file, onSuccess }) => {
   setTimeout(() => {
     onSuccess("ok");
@@ -61,18 +74,6 @@ function CreateEvent() {
 
   const handleChange = ({ fileList: newFileList }) => setFileList(newFileList);
 
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div
-        style={{
-          marginTop: 8,
-        }}
-      >
-        Upload
-      </div>
-    </div>
-  );
   useEffect(() => {
     (async () => {
       try {
@@ -176,7 +177,7 @@ function CreateEvent() {
           >
             <Input.TextArea
               autoSize={{ minRows: 3, maxRows: 5 }}
-              maxLength={400}
+              maxLength={450}
             />
           </Form.Item>
           <Form.Item
