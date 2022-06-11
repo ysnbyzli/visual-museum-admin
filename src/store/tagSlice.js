@@ -8,9 +8,7 @@ export const fetchAllTags = createAsyncThunk("categories/getAll", async () => {
     const { data } = await getAllTags();
     log.success("ALL_CATEGORIES", data);
     return data;
-  } catch (error) {
-    console.log(error.response);
-  }
+  } catch (error) {}
 });
 
 export const addNewTag = createAsyncThunk("tags/add", async (values) => {

@@ -16,7 +16,6 @@ export const addNewPerson = createAsyncThunk(
       message.success("Yeni kişi başarıyla eklendi!");
       return response.data;
     } catch (error) {
-      console.log(error.response);
       return rejectWithValue(error.response);
     }
   }
@@ -26,9 +25,7 @@ export const fetchAllPerson = createAsyncThunk("persons/all", async () => {
   try {
     const response = await getAllPerson();
     return response.data;
-  } catch (error) {
-    console.log("ALL_PERSON_ERROR -> ", error);
-  }
+  } catch (error) {}
 });
 
 export const deleteOnePerson = createAsyncThunk(
@@ -38,9 +35,7 @@ export const deleteOnePerson = createAsyncThunk(
       const response = await deletePerson(id);
       message.success("Silme işlemi başarılı!");
       return response.data;
-    } catch (error) {
-      console.log("DELETE_ONE_PERSON_ERROR -> ", error.response);
-    }
+    } catch (error) {}
   }
 );
 
@@ -51,9 +46,7 @@ export const updateOnePerson = createAsyncThunk(
       const response = await updatePerson(id, values);
       message.success("Güncelleme işlemi başarılı!");
       return response.data;
-    } catch (error) {
-      console.log("UPDATE_ONE_PERSON_ERROR -> ", error.response);
-    }
+    } catch (error) {}
   }
 );
 export const personSlice = createSlice({

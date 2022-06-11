@@ -15,7 +15,7 @@ const dummyRequest = ({ file, onSuccess }) => {
 const { Option } = Select;
 
 const tagRender = (props) => {
-  console.log(props);
+  
   const { label, value, closable, onClose, color } = props;
 
   const onPreventMouseDown = (event) => {
@@ -65,7 +65,7 @@ const AddNewPerson = () => {
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
-        console.log(info.file, info.fileList);
+        
       }
       if (status === "done") {
         message.success(`${info.file.name} fotoğraf başarıyla yüklendi.`);
@@ -76,7 +76,7 @@ const AddNewPerson = () => {
       }
     },
     onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
+      
     },
   };
 

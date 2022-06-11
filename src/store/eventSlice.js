@@ -16,7 +16,7 @@ export const getAllEvents = createAsyncThunk(
       log.success("ALL_EVENTS", data);
       return data;
     } catch (error) {
-      console.log(error.response);
+ 
       return rejectWithValue(error.response);
     }
   }

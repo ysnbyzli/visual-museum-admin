@@ -15,9 +15,7 @@ export const fetchAllCategories = createAsyncThunk(
       const { data } = await getAllCategories();
       log.success("ALL_CATEGORIES", data);
       return data;
-    } catch (error) {
-      console.log(error.response);
-    }
+    } catch (error) {}
   }
 );
 
@@ -30,7 +28,6 @@ export const deleteOneCategory = createAsyncThunk(
       message.success("Kategori silindi!");
       return data;
     } catch (error) {
-      console.log(error.response);
       return rejectWithValue(error.response);
     }
   }
@@ -45,7 +42,7 @@ export const addNewCategory = createAsyncThunk(
       message.success("Yeni kategori eklendi!");
       return data;
     } catch (error) {
-      console.log(error);
+      
       return rejectWithValue(error.response);
     }
   }

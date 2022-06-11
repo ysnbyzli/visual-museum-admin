@@ -39,16 +39,13 @@ const AddEvent = ({ _id }) => {
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
-        console.log(info.file, info.fileList);
       }
       if (status === "done") {
         setFiles((prev) => [...prev, info.file]);
         message.success(`${info.file.name} file uploaded successfully.`);
       }
     },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
+    onDrop(e) {},
   };
 
   return (

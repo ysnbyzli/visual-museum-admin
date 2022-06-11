@@ -16,7 +16,6 @@ const UpdateCategoryModal = ({
 
   useEffect(() => {
     (async () => {
-      console.log("hi");
       try {
         const response = await getOneCategory(categoryId);
         setCategory(response.data);

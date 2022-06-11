@@ -72,22 +72,7 @@ function Index() {
       showDeleteConfirm();
     }
   }, [selectedDelete]);
-  console.log([
-    ...events.map(({ title }) => ({
-      text: title,
-      value: title,
-    })),
-  ]);
-  console.log(
-    [
-      ...events.map(({ tags }) =>
-        tags.map(({ title }) => ({
-          text: title,
-          value: title,
-        }))
-      ),
-    ].flat(9)
-  );
+
   const columns = [
     {
       title: "Başlık",

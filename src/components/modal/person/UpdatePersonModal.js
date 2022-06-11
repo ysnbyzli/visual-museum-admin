@@ -85,7 +85,6 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
-        console.log(info.file, info.fileList);
       }
       if (status === "done") {
         message.success(`${info.file.name} fotoğraf başarıyla yüklendi.`);
@@ -95,9 +94,7 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
         );
       }
     },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
+    onDrop(e) {},
     defaultFileList: [
       {
         uid: "1",
