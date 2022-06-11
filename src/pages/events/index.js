@@ -14,11 +14,14 @@ import {
   Switch,
   Timeline,
   Image,
+  Empty,
 } from "antd";
 import { log } from "../../utils/log";
 import Text from "antd/lib/typography/Text";
 import { encodeDate, encodeDateYear } from "../../utils/date";
 import {
+  CheckOutlined,
+  CloseOutlined,
   DeleteOutlined,
   EditOutlined,
   ExclamationCircleOutlined,
@@ -196,7 +199,24 @@ function Index() {
 
   return (
     <div>
-      <h1 className="text-4xl">Olayları Listele</h1>
+      <head className="flex items-center justify-between">
+        <h1 className="text-4xl">Olayları Listele</h1>
+        {events.length > 0 && (
+          <label
+            htmlFor="timeline"
+            className="flex items-center gap-2 cursor-pointer font-medium"
+          >
+            Zaman çizelgesini göster
+            <Switch
+              id="timeline"
+              onChange={setIsShowTimeline}
+              checkedChildren={<CheckOutlined />}
+              unCheckedChildren={<CloseOutlined />}
+            />
+          </label>
+        )}
+      </head>
+
       <main>
         <Select
           loading={isLoading}
@@ -220,20 +240,25 @@ function Index() {
           <Spin />
         ) : (
           <>
-            {events.length > 0 && (
+            {events.length > 0 ? (
               <Table dataSource={events} columns={columns} className="mt-10" />
+            ) : (
+              selectedPerson && (
+                <>
+                  <div className="py-10">
+                    <Empty
+                      className="flex flex-col items-center justify-center"
+                      description="Kişiye ait bir olay bulunamadı!"
+                      image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+                      imageStyle={{
+                        height: 60,
+                      }}
+                    />
+                  </div>
+                </>
+              )
             )}
           </>
-        )}
-
-        {events.length > 0 && (
-          <label
-            htmlFor="timeline"
-            className="flex items-center gap-2 cursor-pointer font-medium"
-          >
-            Zaman çizelgesini göster
-            <Switch id="timeline" onChange={setIsShowTimeline} />
-          </label>
         )}
 
         {isShowTimeline && (

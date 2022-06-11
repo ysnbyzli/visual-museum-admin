@@ -92,7 +92,7 @@ export const personSlice = createSlice({
       state.data = action.payload.map((person) => ({
         ...person,
         fullName: `${person?.firstName} ${person?.lastName}`,
-        category: person?.category?.title,
+        category: person?.category,
         age: yearDifferenceBetweenTwoDates(
           person?.dateOfBirth,
           person?.dateOfDeath

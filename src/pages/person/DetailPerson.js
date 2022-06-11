@@ -32,9 +32,7 @@ const DetailPerson = () => {
   return (
     <div className="relative pb-10">
       <Header person={person} />
-
       <article data-color-mode="light" className="mt-12 mb-10">
-        <h3 className="text-3xl pb-2">Hakkında</h3>
         <MDEditor.Markdown
           source={person?.description}
           style={{ background: "none" }}

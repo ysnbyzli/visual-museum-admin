@@ -66,3 +66,11 @@ export const getOneTag = (id) => MuseumAPI.get(`/tags/${id}`);
 export const updateTag = (id, data) => MuseumAPI.patch(`/tags/${id}`, data);
 
 export const deleteTag = (id) => MuseumAPI.delete(`/tags/${id}`);
+
+/*
+ *
+ * Statics
+ *
+ * */
+
+export const getAllCounts = () => MuseumAPI.get("/statics/all-count");

@@ -90,17 +90,14 @@ const Person = () => {
       dataIndex: "category",
       key: "category",
       sorter: (a, b) => {
-        return a?.category.localeCompare(b?.category);
+        return a?.category?.title.localeCompare(b?.category?.title);
       },
-      filters: [
-        ...data.map(({ category }) => ({
-          text: category,
-          value: category,
-        })),
-      ],
-      onFilter: (value, record) => record.category.startsWith(value),
+      filters: [...new Set(data?.map(({ category }) => category?.title))].map(
+        (category) => ({ text: category, value: category })
+      ),
+      onFilter: (value, record) => record.category?.title.startsWith(value),
       filterSearch: true,
-      render: (text, record) => <Text>{record?.category}</Text>,
+      render: (text, record) => <Text>{record?.category?.title}</Text>,
     },
     {
       title: "Etiketler",

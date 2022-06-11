@@ -227,16 +227,16 @@ function CreateEvent() {
               />
             </Modal>
           </Form.Item>
-          <Form.Item>
+          <div className="flex justify-end">
             <Button
               type="primary"
               htmlType="submit"
-              className="w-full"
+              className="w-[91.8%]"
               loading={isLoading}
             >
               Submit
             </Button>
-          </Form.Item>
+          </div>
         </Form>
       </div>
     </div>
