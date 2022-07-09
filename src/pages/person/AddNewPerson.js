@@ -16,7 +16,7 @@ import { addNewPerson } from "../../store/personSlice";
 import Dragger from "antd/lib/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
 import { getAllCategories, getAllTags } from "../../api/request";
-import moment from "moment";
+
 const dummyRequest = ({ file, onSuccess }) => {
   setTimeout(() => {
     onSuccess("ok");

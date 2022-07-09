@@ -8,11 +8,13 @@ import {
   Upload,
   Modal,
   message,
+  Empty,
 } from "antd";
 import { addEvent, getAllPerson, getAllTags } from "../../api/request";
 import { PlusOutlined } from "@ant-design/icons";
 
 import { log } from "../../utils/log";
+import { Link } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -128,9 +130,9 @@ function CreateEvent() {
             tags: [],
           }}
           name="control-hooks"
-          labelCol={{ span: 2 }}
+          labelCol={{ span: 3 }}
           labelAlign="left"
-          wrapperCol={{ span: 24 }}
+          wrapperCol={{ span: 23 }}
           onFinish={onSubmit}
         >
           <Form.Item
@@ -143,7 +145,7 @@ function CreateEvent() {
               },
             ]}
           >
-            <Input />
+            <Input maxLength={100} showCount />
           </Form.Item>
           <Form.Item
             name="person"
@@ -178,6 +180,7 @@ function CreateEvent() {
             <Input.TextArea
               autoSize={{ minRows: 3, maxRows: 5 }}
               maxLength={450}
+              showCount
             />
           </Form.Item>
           <Form.Item
@@ -189,18 +192,40 @@ function CreateEvent() {
                 message: "Tarih aralığı alanı zorunludur!",
               },
             ]}
+            className="!mt-8"
           >
             <DatePicker.RangePicker
               className="w-full"
               placeholder={["Başlangıç Tarihi", "Bitiş Tarihi"]}
+              disabledDate={(current) =>
+                current && current.valueOf() > Date.now()
+              }
             />
           </Form.Item>
           <Form.Item name="tags" label="Etiketler">
-            <Select allowClear mode="tags">
-              {tags?.map(({ _id, title }) => (
-                <Option value={_id}>{title}</Option>
-              ))}
-            </Select>
+            <Select
+              mode="multiple"
+              showArrow
+              allowClear
+              notFoundContent={
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  imageStyle={{
+                    height: 60,
+                  }}
+                  description={<span>Etiket Bulunamadı</span>}
+                >
+                  <Link to="/tags">
+                    <Button type="primary">Şimdi Oluştur</Button>
+                  </Link>
+                </Empty>
+              }
+              style={{ width: "100%" }}
+              options={tags.map((tag) => ({
+                value: tag._id,
+                label: tag.title,
+              }))}
+            />
           </Form.Item>
           <Form.Item label="Fotoğraf" name="photos">
             <Upload
@@ -231,7 +256,7 @@ function CreateEvent() {
             <Button
               type="primary"
               htmlType="submit"
-              className="w-[91.8%]"
+              className="w-[87.5%]"
               loading={isLoading}
             >
               Submit
