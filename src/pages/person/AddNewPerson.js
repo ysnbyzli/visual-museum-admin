@@ -119,6 +119,7 @@ const AddNewPerson = () => {
           form={form}
           labelCol={{ span: 6 }}
           wrapperCol={{ span: 18 }}
+          labelAlign="left"
         >
           <div className="flex gap-5">
             <Form.Item
@@ -181,8 +182,6 @@ const AddNewPerson = () => {
             <Form.Item
               label="Kategori"
               className="w-full"
-              wrapperCol={{ span: 18 }}
-              labelCol={{ span: 6 }}
               name="category"
               rules={[
                 {
@@ -206,8 +205,6 @@ const AddNewPerson = () => {
             <Form.Item
               label="Etiket"
               className="w-full"
-              wrapperCol={{ span: 18 }}
-              labelCol={{ span: 6 }}
               name="tags"
               rules={[
                 {
