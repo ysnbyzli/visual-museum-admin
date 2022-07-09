@@ -59,7 +59,17 @@ export const personSlice = createSlice({
   reducers: {
     handleUpdatePerson: (state, action) => {
       state.data = state.data.map((person) =>
-        person?._id !== action.payload?._id ? person : action.payload
+        person?._id !== action.payload?._id
+          ? person
+          : {
+              ...action.payload,
+              fullName: `${action.payload?.firstName} ${action.payload?.lastName}`,
+              category: action.payload?.category,
+              age: yearDifferenceBetweenTwoDates(
+                action.payload?.dateOfBirth,
+                action.payload?.dateOfDeath
+              ),
+            }
       );
       state.loading = false;
     },

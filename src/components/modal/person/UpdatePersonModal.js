@@ -11,6 +11,7 @@ import {
 } from "antd";
 import moment from "moment";
 import {
+  findById,
   getAllCategories,
   getAllTags,
   updatePerson,
@@ -19,11 +20,7 @@ import MDEditor from "@uiw/react-md-editor";
 import Dragger from "antd/lib/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
-import {
-  handleUpdatePerson,
-  updateOnePerson,
-} from "../../../store/personSlice";
-import category from "../../../pages/category";
+import { handleUpdatePerson } from "../../../store/personSlice";
 import { log } from "../../../utils/log";
 
 const { Option } = Select;
@@ -57,13 +54,16 @@ const tagRender = (props) => {
   );
 };
 
-function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
+function UpdatePersonModal({ isModalVisible, setIsModalVisible, personId }) {
   const [form] = Form.useForm();
+  const [title, setTitle] = useState(null);
+  const [photo, setPhoto] = useState("");
   const [categories, setCategories] = useState([]);
   const [tags, setTags] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [description, setDescription] = useState(person?.description);
+  const [description, setDescription] = useState("");
   const dispatch = useDispatch();
+
   useEffect(() => {
     (async () => {
       try {
@@ -78,6 +78,30 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
       } catch (e) {}
     })();
   }, []);
+
+  useEffect(() => {
+    if (personId) {
+      (async () => {
+        try {
+          const res = await findById(personId);
+          const person = res.data;
+          log.success("FIND_BY_PERSON", person);
+          form.setFieldsValue({
+            firstName: person?.firstName,
+            lastName: person?.lastName,
+            dateOfBirth: moment(person?.dateOfBirth),
+            dateOfDeath: moment(person?.dateOfDeath),
+            photo: person?.photo,
+            category: person?.category?._id,
+            tags: person?.tags?.map((tag) => tag?._id),
+          });
+          setDescription(person?.description);
+          setTitle(`${person?.firstName} ${person?.lastName}`);
+          setPhoto(person?.photo);
+        } catch (e) {}
+      })();
+    }
+  }, [personId]);
 
   const props = {
     name: "file",
@@ -98,9 +122,9 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
     defaultFileList: [
       {
         uid: "1",
-        name: `${person?.firstName} ${person?.lastName}`,
+        name: title,
         status: "done",
-        url: person?.photo,
+        url: photo,
       },
     ],
   };
@@ -112,10 +136,10 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
         (category) => category?._id === values?.category
       );
       const existingTags = tags.filter((tag) => values.tags.includes(tag?._id));
-      await updatePerson(person?._id, { ...values, description });
+      await updatePerson(personId, { ...values, description });
       const customizedValue = {
         ...values,
-        _id: person?._id,
+        _id: personId,
         category: Array.isArray(existingCategory) && existingCategory[0],
         tags: existingTags,
         dateOfBirth: values?.dateOfBirth?._i,
@@ -133,7 +157,7 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
 
   return (
     <Modal
-      title={`${person?.firstName} ${person?.lastName} Güncelle`}
+      title={`${title} Güncelle`}
       visible={isModalVisible}
       onCancel={() => setIsModalVisible(false)}
       width={1000}
@@ -153,19 +177,19 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
       ]}
     >
       <Form
+        id="updateForm"
         initialValues={{
-          firstName: person?.firstName,
-          lastName: person?.lastName,
-          dateOfBirth: moment(person?.dateOfBirth),
-          dateOfDeath: moment(person?.dateOfDeath),
-          photo: person?.photo,
-          category: person?.category?._id,
-          tags: person?.tags?.map((tag) => tag?._id),
+          firstName: "",
+          lastName: "",
+          dateOfBirth: "",
+          dateOfDeath: "",
+          photo: "",
+          category: "",
+          tags: "",
         }}
         form={form}
         labelCol={{ span: 6 }}
         wrapperCol={{ span: 18 }}
-        id="updateForm"
         onFinish={onSubmit}
       >
         <div className="flex gap-5">
@@ -225,13 +249,9 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
               },
             ]}
           >
-            <Select
-              style={{ width: "100%" }}
-              optionLabelProp="label"
-              defaultValue={person?.category?.title}
-            >
+            <Select style={{ width: "100%" }} optionLabelProp="label">
               {categories.map(({ title, _id }) => (
-                <Option value={_id} label={title}>
+                <Option value={_id} label={title} key={_id}>
                   <div className="demo-option-label-item">{title}</div>
                 </Option>
               ))}
@@ -251,7 +271,7 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
             ]}
           >
             <Select
-              mode="multiple"
+              mode="tags"
               showArrow
               tagRender={tagRender}
               style={{ width: "100%" }}
@@ -283,16 +303,17 @@ function UpdatePersonModal({ isModalVisible, setIsModalVisible, person }) {
           wrapperCol={{ span: 21 }}
           labelCol={{ span: 3 }}
         >
-          <Dragger {...props} listType="picture" customRequest={dummyRequest}>
+          <Dragger
+            {...props}
+            defa
+            listType="picture"
+            customRequest={dummyRequest}
+          >
             <p className="ant-upload-drag-icon">
               <InboxOutlined />
             </p>
             <p className="ant-upload-text">
-              Click or drag file to this area to upload
-            </p>
-            <p className="ant-upload-hint">
-              Support for a single or bulk upload. Strictly prohibit from
-              uploading company data or other band files
+              Bir fotoğraf sürükleyin veya tıklayın.
             </p>
           </Dragger>
         </Form.Item>

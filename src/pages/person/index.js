@@ -120,7 +120,7 @@ const Person = () => {
             style={{ color: "#3498db" }}
             className="cursor-pointer"
             onClick={() => {
-              setSelectedUpdatePerson(record);
+              setSelectedUpdatePerson(record?._id);
               setIsModalUpdateVisible(true);
             }}
           />
@@ -162,13 +162,11 @@ const Person = () => {
       >
         <p>Silmek istediğinize emin misiniz?</p>
       </Modal>
-      {selectedUpdatePerson && (
-        <UpdatePersonModal
-          isModalVisible={isModalUpdateVisible}
-          person={selectedUpdatePerson}
-          setIsModalVisible={setIsModalUpdateVisible}
-        />
-      )}
+      <UpdatePersonModal
+        isModalVisible={isModalUpdateVisible}
+        personId={selectedUpdatePerson}
+        setIsModalVisible={setIsModalUpdateVisible}
+      />
     </div>
   );
 };

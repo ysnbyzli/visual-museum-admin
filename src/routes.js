@@ -1,13 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import {
-  HomeOutlined,
-  CalendarOutlined,
-  AppstoreOutlined,
-  SettingOutlined,
-  LinkOutlined,
-  TeamOutlined,
-  UserAddOutlined,
-} from "@ant-design/icons";
+import { HomeOutlined } from "@ant-design/icons";
 import Person from "./pages/person";
 import AddNewPerson from "./pages/person/AddNewPerson";
 import Home from "./pages/Home";
