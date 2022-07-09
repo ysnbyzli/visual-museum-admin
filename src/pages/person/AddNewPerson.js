@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from "react";
-import { Button, DatePicker, Form, Input, message, Select, Tag } from "antd";
+import {
+  Button,
+  DatePicker,
+  Empty,
+  Form,
+  Input,
+  message,
+  Select,
+  Tag,
+} from "antd";
 import MDEditor from "@uiw/react-md-editor";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { addNewPerson } from "../../store/personSlice";
 import Dragger from "antd/lib/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
 import { getAllCategories, getAllTags } from "../../api/request";
+import moment from "moment";
 const dummyRequest = ({ file, onSuccess }) => {
   setTimeout(() => {
     onSuccess("ok");
@@ -15,7 +25,6 @@ const dummyRequest = ({ file, onSuccess }) => {
 const { Option } = Select;
 
 const tagRender = (props) => {
-  
   const { label, value, closable, onClose, color } = props;
 
   const onPreventMouseDown = (event) => {
@@ -65,7 +74,6 @@ const AddNewPerson = () => {
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {
-        
       }
       if (status === "done") {
         message.success(`${info.file.name} fotoğraf başarıyla yüklendi.`);
@@ -75,9 +83,7 @@ const AddNewPerson = () => {
         );
       }
     },
-    onDrop(e) {
-      
-    },
+    onDrop(e) {},
   };
 
   useEffect(() => {
@@ -97,7 +103,7 @@ const AddNewPerson = () => {
   return (
     <div className="flex flex-col items-center pb-10">
       <h1 className="self-start text-4xl">Kişi Ekle</h1>
-      <div className="w-full flex ">
+      <div className="flex w-full ">
         <Form
           initialValues={{
             firstName: "",
@@ -125,7 +131,7 @@ const AddNewPerson = () => {
                 { min: 3, message: "Minumum 3 karakter olmalıdır!" },
               ]}
             >
-              <Input />
+              <Input maxLength={30} showCount />
             </Form.Item>
             <Form.Item
               label="Soyad"
@@ -136,7 +142,7 @@ const AddNewPerson = () => {
                 { whitespace: true, message: "Ad alanı boş bırakılamaz!" },
               ]}
             >
-              <Input />
+              <Input maxLength={30} showCount />
             </Form.Item>
           </div>
           <div className="flex gap-5">
@@ -151,14 +157,24 @@ const AddNewPerson = () => {
                 },
               ]}
             >
-              <DatePicker className="w-full" />
+              <DatePicker
+                className="w-full"
+                disabledDate={(current) =>
+                  current && current.valueOf() > Date.now()
+                }
+              />
             </Form.Item>
             <Form.Item
               className="w-full"
               name="dateOfDeath"
               label="Ölüm Tarihi"
             >
-              <DatePicker className="w-full" />
+              <DatePicker
+                className="w-full"
+                disabledDate={(current) =>
+                  current && current.valueOf() > Date.now()
+                }
+              />
             </Form.Item>
           </div>
           <div className="flex gap-5">
@@ -203,7 +219,21 @@ const AddNewPerson = () => {
               <Select
                 mode="multiple"
                 showArrow
+                allowClear
                 tagRender={tagRender}
+                notFoundContent={
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    imageStyle={{
+                      height: 60,
+                    }}
+                    description={<span>Etiket Bulunamadı</span>}
+                  >
+                    <Link to="/tags">
+                      <Button type="primary">Şimdi Oluştur</Button>
+                    </Link>
+                  </Empty>
+                }
                 style={{ width: "100%" }}
                 options={tags.map((tag) => ({
                   value: tag._id,
@@ -247,7 +277,7 @@ const AddNewPerson = () => {
               </p>
             </Dragger>
           </Form.Item>
-          <div className="flex justify-center items-center">
+          <div className="flex items-center justify-center">
             <Button type="primary" htmlType="submit" className="w-1/2 ml-24">
               Kaydet
             </Button>
